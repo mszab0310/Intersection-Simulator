@@ -35,7 +35,9 @@ public class Frame {
                         e.printStackTrace();
                     }
                     car.move();
+                    car.adjustSpeed(50,cars);
                 }
+                cars.remove(car);
             });
             thread.start();
         });
