@@ -24,13 +24,13 @@ public class Frame {
         sidePanel = new JPanel();
         bottomPanel = new JPanel();
         controlWidget = new ControlWidget(a -> {
-            Car car = new Car(100,20,new VerticalVelocity(1));
+            Car car = new Car(100,20,new VerticalVelocity(1),100 - controlWidget.getSliderValue());
             cars.add(car);
             Thread thread = new Thread(() -> {
                 while (car.isInBounds()){
                     roadPanel.repaint();
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(car.getSleepTime());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

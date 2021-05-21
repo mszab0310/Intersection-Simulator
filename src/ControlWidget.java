@@ -11,9 +11,9 @@ public class ControlWidget {
     private JPanel widgetPanel;
 
     public ControlWidget(ActionListener actionListener){
-        slider = new JSlider(0,10,5);
+        slider = new JSlider(0,100,50);
         slider.setPaintTicks(true);
-        slider.setMinorTickSpacing(1);
+        slider.setMajorTickSpacing(10);
         button = new JButton("Start");
         button.addActionListener(actionListener);
         widgetPanel = new JPanel();
@@ -24,5 +24,9 @@ public class ControlWidget {
 
     public JPanel getWidgetPanel() {
         return widgetPanel;
+    }
+
+    public int getSliderValue(){
+        return slider.getValue();
     }
 }

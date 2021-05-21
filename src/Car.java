@@ -9,13 +9,19 @@ public class Car {
     private int height;
     private Velocity velocity;
     private Color color;
+    private int sleepTime;
 
-    public Car(int x,int y,Velocity velocity){
+    public Car(int x,int y,Velocity velocity,int sleepTime){
         this.position = new Point(x,y);
         this.velocity = velocity;
+        this.sleepTime = sleepTime;
         width = 40;
         height = 80;
         color = new Color((int)(Math.random()*256),(int)(Math.random()*256),(int)(Math.random()*256));
+    }
+
+    public int getSleepTime() {
+        return sleepTime;
     }
 
     public void draw(Graphics g){
