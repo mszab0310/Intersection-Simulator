@@ -1,3 +1,4 @@
+import velocity.Point;
 import velocity.VerticalVelocity;
 
 import javax.swing.*;
@@ -24,7 +25,11 @@ public class Frame {
         sidePanel = new JPanel();
         bottomPanel = new JPanel();
         controlWidget = new ControlWidget(a -> {
-            Car car = new Car(100,20,new VerticalVelocity(1),100 - controlWidget.getSliderValue());
+            Point position = new Point(100,10);
+            if(cars.size() > 0 && cars.get(cars.size() - 1).getPosition().getY()  <= position.getY() + 130){
+                return;
+            }
+            Car car = new Car(position.getX(),position.getY(),new VerticalVelocity(1),100 - controlWidget.getSliderValue());
             cars.add(car);
             Thread thread = new Thread(() -> {
                 while (car.isInBounds()){
