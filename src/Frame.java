@@ -1,5 +1,4 @@
 import velocity.Point;
-import velocity.VerticalVelocity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,24 +12,28 @@ public class Frame {
     private RoadPanel roadPanel;
     private JPanel sidePanel;
     private JPanel bottomPanel;
-    private ControlWidget controlWidget;
-    private List<Car> cars;
+    private ControlWidget verticalControlWidget;
+    private ControlWidget horizontalControlWidget;
+    private List<Car> verticalCars;
+    private List<Car> horizontalCars;
 
 
 
     public Frame() {
         frame = new JFrame("Intersection");
-        cars = new ArrayList<>();
-        roadPanel = new RoadPanel(cars);
+        verticalCars = new ArrayList<>();
+        horizontalCars = new ArrayList<>();
+        roadPanel = new RoadPanel(verticalCars,horizontalCars);
         sidePanel = new JPanel();
         bottomPanel = new JPanel();
-        controlWidget = new ControlWidget(a -> {
+        verticalControlWidget = new ControlWidget(a -> {
+            int followDistance = 50;
             Point position = new Point(100,10);
-            if(cars.size() > 0 && cars.get(cars.size() - 1).getPosition().getY()  <= position.getY() + 130){
+            if(verticalCars.size() > 0 && verticalCars.get(verticalCars.size() - 1).getPosition().getY()  <= position.getY() + Dimensions.VERTICAL_CAR_HEIGHT+followDistance){
                 return;
             }
-            Car car = new Car(position.getX(),position.getY(),new VerticalVelocity(1),100 - controlWidget.getSliderValue());
-            cars.add(car);
+            Car car = new Car('v',position.getX(),position.getY(),101 - verticalControlWidget.getSliderValue());
+            verticalCars.add(car);
             Thread thread = new Thread(() -> {
                 while (car.isInBounds()){
                     roadPanel.repaint();
@@ -40,16 +43,41 @@ public class Frame {
                         e.printStackTrace();
                     }
                     car.move();
-                    car.adjustSpeed(50,cars);
+                    car.adjustSpeed(followDistance, verticalCars);
                 }
-                cars.remove(car);
+                verticalCars.remove(car);
             });
             thread.start();
         });
-
+        horizontalControlWidget = new ControlWidget(a -> {
+            int followDistance = 50;
+            Point position = new Point(10,500);
+            if(horizontalCars.size() > 0 && horizontalCars.get(horizontalCars.size() - 1).getPosition().getX()  <= position.getX() + Dimensions.HORIZONTAL_CAR_WIDTH+followDistance){
+                return;
+            }
+            Car car = new Car('h',position.getX(),position.getY(),101 - horizontalControlWidget.getSliderValue());
+            horizontalCars.add(car);
+            Thread thread = new Thread(() -> {
+                while (car.isInBounds()){
+                    roadPanel.repaint();
+                    try {
+                        Thread.sleep(car.getSleepTime());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    car.move();
+                    car.adjustSpeed(followDistance, horizontalCars);
+                }
+                horizontalCars.remove(car);
+            });
+            thread.start();
+        });
         sidePanel.setPreferredSize(new Dimension(200, Dimensions.PANEL_HEIGHT));
-        sidePanel.add(controlWidget.getWidgetPanel(),BorderLayout.NORTH);
+        sidePanel.add(verticalControlWidget.getWidgetPanel(),BorderLayout.NORTH);
         bottomPanel.setPreferredSize(new Dimension(Dimensions.PANEL_WIDTH, 200));
+        bottomPanel.setLayout(new BoxLayout(bottomPanel,BoxLayout.LINE_AXIS));
+        bottomPanel.add(horizontalControlWidget.getWidgetPanel());
+        bottomPanel.add(Box.createRigidArea(new Dimension(950,0)));
         roadPanel.setBackground(new Color(135, 130, 130));
         frame.add(roadPanel, BorderLayout.CENTER);
         frame.add(sidePanel, BorderLayout.EAST);
