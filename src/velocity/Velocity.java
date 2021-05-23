@@ -12,4 +12,12 @@ public class Velocity {
     public Point next(Point point) {
         return new Point(point.getX() + this.x, point.getY() + this.y);
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

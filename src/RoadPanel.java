@@ -15,7 +15,10 @@ public class RoadPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        g.fillRect(0,0,475,375);
+        g.fillRect(525,0,475,375);
+        g.fillRect(0,425,475,375);
+        g.fillRect(525,425,475,375);
         verticalCars.forEach(car -> {
             car.draw(g);
         });

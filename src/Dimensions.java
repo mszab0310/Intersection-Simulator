@@ -7,5 +7,6 @@ public class Dimensions {
     public static final int VERTICAL_CAR_HEIGHT = 50;
     public static final int HORIZONTAL_CAR_WIDTH = 50;
     public static final int HORIZONTAL_CAR_HEIGHT = 30;
+    public static final int INTERSECTION_SIZE = 50;
 
 }

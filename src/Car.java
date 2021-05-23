@@ -16,15 +16,15 @@ public class Car {
     private int sleepTime;
     private char orientation;
 
-    public Car(char orientation,int x, int y, int sleepTime) {
+    public Car(char orientation, int x, int y, int sleepTime) {
         this.orientation = orientation;
         this.position = new Point(x, y);
         this.sleepTime = sleepTime;
-        if(orientation == 'v'){
+        if (orientation == 'v') {
             width = Dimensions.VERTICAL_CAR_WIDTH;
             height = Dimensions.VERTICAL_CAR_HEIGHT;
             this.velocity = new VerticalVelocity(1);
-        }else{
+        } else {
             width = Dimensions.HORIZONTAL_CAR_WIDTH;
             height = Dimensions.HORIZONTAL_CAR_HEIGHT;
             this.velocity = new HorizontalVelocity(1);
@@ -65,6 +65,7 @@ public class Car {
         return velocity;
     }
 
+
     public Color getColor() {
         return color;
     }
@@ -74,18 +75,49 @@ public class Car {
                 .filter(car -> {
                     int verticalDist = car.getPosition().getY() - this.position.getY() - this.height;
                     int horizontalDist = car.getPosition().getX() - this.position.getX() - this.width;
-                    return orientation == 'h'? horizontalDist > 0 && horizontalDist < distance : verticalDist > 0 && verticalDist < distance;
+                    return orientation == 'h' ? horizontalDist > 0 && horizontalDist < distance : verticalDist > 0 && verticalDist < distance;
                 })
                 .findFirst();
+    }
+
+
+    public boolean isCloseToIntersection(Point intersection) {
+        return orientation == 'h' ? this.position.getX() >= intersection.getX() - 100 && this.position.getX() < intersection.getX() + 50 :
+                this.getPosition().getY() + Dimensions.VERTICAL_CAR_HEIGHT >= intersection.getY() - 10;
+    }
+
+    public boolean isPastIntersection(Point intersection) {
+        return this.position.getX() > intersection.getX() + 50;
+    }
+
+    public boolean checkPriority(Point intersection, List<Car> horizontalCars) {
+        if (this.getPosition().getY() + Dimensions.VERTICAL_CAR_HEIGHT >= intersection.getY() - 100) {
+            for (Car hcar : horizontalCars) {
+                if (hcar.isCloseToIntersection(intersection)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
     }
 
     public void setSleepTime(int sleepTime) {
         this.sleepTime = sleepTime;
     }
 
+    public void setVelocityInt(int velocity) {
+        this.velocity = orientation == 'h' ? new HorizontalVelocity(velocity) : new VerticalVelocity(velocity);
+    }
+
+    public void setVelocity(Velocity velocity) {
+        this.velocity = velocity;
+    }
+
     public void adjustSpeed(int distance, List<Car> cars) {
         Optional<Car> car = getCloseCarInFront(distance, cars);
         car.ifPresent(a -> {
+            this.setVelocity(car.get().getVelocity());
             if (this.sleepTime < car.get().getSleepTime()) {
                 this.setSleepTime(car.get().getSleepTime());
             }

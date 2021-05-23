@@ -16,6 +16,7 @@ public class Frame {
     private ControlWidget horizontalControlWidget;
     private List<Car> verticalCars;
     private List<Car> horizontalCars;
+    private Point intersection;
 
 
 
@@ -23,12 +24,13 @@ public class Frame {
         frame = new JFrame("Intersection");
         verticalCars = new ArrayList<>();
         horizontalCars = new ArrayList<>();
+        intersection = new Point(475,385);
         roadPanel = new RoadPanel(verticalCars,horizontalCars);
         sidePanel = new JPanel();
         bottomPanel = new JPanel();
         verticalControlWidget = new ControlWidget(a -> {
             int followDistance = 50;
-            Point position = new Point(100,10);
+            Point position = new Point(485,0);
             if(verticalCars.size() > 0 && verticalCars.get(verticalCars.size() - 1).getPosition().getY()  <= position.getY() + Dimensions.VERTICAL_CAR_HEIGHT+followDistance){
                 return;
             }
@@ -44,14 +46,23 @@ public class Frame {
                     }
                     car.move();
                     car.adjustSpeed(followDistance, verticalCars);
+                    if(car.checkPriority(intersection,horizontalCars)){
+                        if(car.isCloseToIntersection(intersection)){
+                            car.setVelocityInt(0);
+                        }
+                    }else{
+                        car.setVelocityInt(1);
+                    }
+                    car.adjustSpeed(followDistance,verticalCars);
                 }
                 verticalCars.remove(car);
             });
             thread.start();
+
         });
         horizontalControlWidget = new ControlWidget(a -> {
             int followDistance = 50;
-            Point position = new Point(10,500);
+            Point position = new Point(0,385);
             if(horizontalCars.size() > 0 && horizontalCars.get(horizontalCars.size() - 1).getPosition().getX()  <= position.getX() + Dimensions.HORIZONTAL_CAR_WIDTH+followDistance){
                 return;
             }
@@ -84,6 +95,7 @@ public class Frame {
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setSize(Dimensions.FRAME_WIDTH, Dimensions.FRAME_HEIGHT);
         frame.setVisible(true);
+        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
