@@ -83,7 +83,7 @@ public class Car {
 
     public boolean isCloseToIntersection(Point intersection) {
         return orientation == 'h' ? this.position.getX() >= intersection.getX() - 100 && this.position.getX() < intersection.getX() + 50 :
-                this.getPosition().getY() + Dimensions.VERTICAL_CAR_HEIGHT >= intersection.getY() - 10;
+                this.getPosition().getY() + Dimensions.VERTICAL_CAR_HEIGHT >= intersection.getY() - 10 &&  this.getPosition().getY() + Dimensions.VERTICAL_CAR_HEIGHT <= intersection.getY() - 10 ;
     }
 
     public boolean isPastIntersection(Point intersection) {
@@ -91,7 +91,7 @@ public class Car {
     }
 
     public boolean checkPriority(Point intersection, List<Car> horizontalCars) {
-        if (this.getPosition().getY() + Dimensions.VERTICAL_CAR_HEIGHT >= intersection.getY() - 100) {
+        if (this.getPosition().getY() + Dimensions.VERTICAL_CAR_HEIGHT <= intersection.getY() && this.getPosition().getY() + Dimensions.VERTICAL_CAR_HEIGHT < intersection.getY()) {
             for (Car hcar : horizontalCars) {
                 if (hcar.isCloseToIntersection(intersection)) {
                     return true;
